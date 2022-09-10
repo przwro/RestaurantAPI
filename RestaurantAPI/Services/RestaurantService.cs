@@ -10,6 +10,7 @@ namespace RestaurantAPI.Services
     public interface IRestaurantService
     {
         int Create(CreateRestaurantDto dto);
+        bool Update(int id, UpdateRestaurantDto dto);
         bool Delete(int id);
         IEnumerable<RestaurantDto> GetAll();
         RestaurantDto GetById(int id);
@@ -24,6 +25,31 @@ namespace RestaurantAPI.Services
         {
             _dbContext = dbContext;
             _mapper = mapper;
+        }
+        public int Create(CreateRestaurantDto dto)
+        {
+            var restaurant = _mapper.Map<Restaurant>(dto);
+            _dbContext.Restaurants.Add(restaurant);
+            _dbContext.SaveChanges();
+
+            return restaurant.Id;
+        }
+
+        public bool Update(int id, UpdateRestaurantDto dto)
+        {
+            var restaurant = _dbContext
+                .Restaurants
+                .FirstOrDefault(r => r.Id == id);
+
+            if (restaurant is null) return false;
+
+            restaurant.Name = dto.Name;
+            restaurant.Description = dto.Description;
+            restaurant.HasDelivery = dto.HasDelivery;
+
+            _dbContext.SaveChanges();
+
+            return true;
         }
 
         public bool Delete(int id)
@@ -66,15 +92,6 @@ namespace RestaurantAPI.Services
             var restaurantsDtos = _mapper.Map<List<RestaurantDto>>(restuarants);
 
             return restaurantsDtos;
-        }
-
-        public int Create(CreateRestaurantDto dto)
-        {
-            var restaurant = _mapper.Map<Restaurant>(dto);
-            _dbContext.Restaurants.Add(restaurant);
-            _dbContext.SaveChanges();
-
-            return restaurant.Id;
         }
     }
 }
