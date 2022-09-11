@@ -49,7 +49,20 @@ namespace RestaurantAPI.Controllers
             return NotFound();
         }
 
-        [HttpPost]
+        [HttpPost("createClient")]
+        public ActionResult CreateClient([FromBody] CreateClientDto dto)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var id = _restaurantService.CreateClient(dto);
+
+            return Created($"api/client/{id}", null);
+        }
+
+        [HttpPost("createRestaurant")]
         public ActionResult CreateRestaurant([FromBody] CreateRestaurantDto dto)
         {
             if(!ModelState.IsValid)
@@ -57,7 +70,7 @@ namespace RestaurantAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            var id = _restaurantService.Create(dto);
+            var id = _restaurantService.CreateRestaurant(dto);
 
             return Created($"/api/restaurant/{id}", null);
         }

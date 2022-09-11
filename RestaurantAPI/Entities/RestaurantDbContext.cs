@@ -14,6 +14,7 @@ namespace RestaurantAPI.Entities
         public DbSet<Restaurant> Restaurants { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Dish> Dishes { get; set; }
+        public DbSet<Client> Clients { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,6 +36,10 @@ namespace RestaurantAPI.Entities
                 .Property(a => a.Street)
                 .IsRequired()
                 .HasMaxLength(50);
+
+            modelBuilder.Entity<Client>()
+                .Property(c => c.IsMarried)
+                .IsRequired();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
